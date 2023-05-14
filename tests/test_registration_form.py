@@ -3,11 +3,26 @@ from registration_form import resource
 from tests import conftest
 
 
-def test_registration_form(browser_start):
-    browser.open('/automation-practice-form')
+class RegistrationPage:
 
-    browser.element('#firstName').type('Test')
-    browser.element('#lastName').type('Test2')
+    def open(self):
+        browser.open('/automation-practice-form')
+
+    def fill_first_name(self, value):
+        browser.element('#firstName').type(value)
+
+    def fill_last_name(self, value):
+        browser.element('#lastName').type(value)
+
+
+def test_registration_form(browser_start):
+    registration_page = RegistrationPage()
+    registration_page.open()
+
+    # WHEN
+    registration_page.fill_first_name('Daniil')
+    registration_page.fill_last_name('Moiseenko')
+
     browser.element('#userEmail').type('test@test.test')
     browser.element('[for = gender-radio-1]').click()
     browser.element('#userNumber').type('78484884844')
@@ -20,7 +35,7 @@ def test_registration_form(browser_start):
     browser.element('#city').click().with_().element('#react-select-4-option-0').click()
     browser.element('#submit').click()
 
-    # Проверяем корректность заполненных полей
+    # THEN
     browser.element('#example-modal-sizes-title-lg').should(have.text('Thanks for submitting the form'))
     browser.all('tbody tr').should(have.exact_texts(
         'Student Name Test Test2', 'Student Email test@test.test',
