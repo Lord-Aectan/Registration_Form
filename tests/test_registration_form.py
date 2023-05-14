@@ -1,5 +1,7 @@
+import os.path
 from selene import browser, have, command
-import os
+import tests
+from registration_form import resource
 
 
 def test_registration_form():
@@ -12,9 +14,11 @@ def test_registration_form():
     browser.element('[for = gender-radio-1]').click()
     browser.element('#userNumber').type('78484884844')
     browser.element('#dateOfBirthInput').perform(command.select_all).type('07 Apr 1990').press_enter()
-    browser.element('#subjectsInput').type('te').press_enter()
+    browser.element('#subjectsInput').type('Computer Science').press_enter()
     browser.element('[for = hobbies-checkbox-2]').click()
-    browser.element('#uploadPicture').send_keys(os.getcwd() + '/Imp.jpg')
+    browser.element('#uploadPicture').set_value(
+        os.path.abspath(os.path.join(os.path.dirname(tests.__file__), 'resources/Imp.jpg'))
+    )
     browser.element('#currentAddress').type('Test adress')
     browser.element('#state').click().with_().element('#react-select-3-option-0').click()
     browser.element('#city').click().with_().element('#react-select-4-option-0').click()
