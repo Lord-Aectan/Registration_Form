@@ -1,11 +1,11 @@
 from selene import browser, have, command
 from registration_form import resource
+from tests import conftest
 
 
-def test_registration_form():
-    browser.config.window_width = 1500
-    browser.config.window_height = 1200
-    browser.open('https://demoqa.com/automation-practice-form')
+def test_registration_form(browser_start):
+    browser.open('/automation-practice-form')
+
     browser.element('#firstName').type('Test')
     browser.element('#lastName').type('Test2')
     browser.element('#userEmail').type('test@test.test')
@@ -15,9 +15,6 @@ def test_registration_form():
     browser.element('#subjectsInput').type('Computer Science').press_enter()
     browser.element('[for = hobbies-checkbox-2]').click()
     browser.element('#uploadPicture').set_value(resource.path('Imp.jpg'))
-    #browser.element('#uploadPicture').set_value(
-    #    os.path.abspath(os.path.join(os.path.dirname(tests.__file__), 'resources/Imp.jpg'))
-    #)
     browser.element('#currentAddress').type('Test adress')
     browser.element('#state').click().with_().element('#react-select-3-option-0').click()
     browser.element('#city').click().with_().element('#react-select-4-option-0').click()
