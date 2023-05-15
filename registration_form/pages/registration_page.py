@@ -52,15 +52,15 @@ class RegistrationPage:
     def should_have_registered(self, full_name, email, gender, mobile_phone, birth_date,
                                subjects, hobbies, picture, current_address, state_and_city_address):
         browser.element('.table').all('td').even.should(have.exact_texts(
-            full_name,
-            email,
-            gender,
-            mobile_phone,
-            birth_date,
-            subjects,
-            hobbies,
-            picture,
-            current_address,
-            state_and_city_address,
+            f'{full_name}',
+            f'{email}',
+            f'{gender}',
+            f'{mobile_phone}',
+            f'{birth_date}',
+            f'{subjects}',
+            f'{hobbies}',
+            f'{picture}',
+            f'{current_address}',
+            f'{state_and_city_address}',
         )
         )
