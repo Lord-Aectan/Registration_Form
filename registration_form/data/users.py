@@ -10,13 +10,8 @@ class Gender(Enum):
 
 
 class Subject(Enum):
-    english = 'English'
-    maths = 'Maths'
-    physics = 'Physics'
     chemistry = 'Chemistry'
     computer_science = 'Computer Science'
-    economics = 'Economics'
-    arts = 'Arts'
     biology = 'Biology'
 
 
@@ -33,7 +28,7 @@ class User:
     email: str
     gender: List[Gender]
     mobile_number: str
-    birth_day: str
+    birthday: str
     subjects: List[Subject]
     hobbies: List[Hobbies]
     picture: str
