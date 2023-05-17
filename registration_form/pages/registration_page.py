@@ -20,25 +20,17 @@ class RegistrationPage:
         for subject in student.subjects:
             browser.element('#subjectsInput').send_keys(subject).press_tab()
         for hobby in student.hobbies:
-            browser.all('#hobbiesWrapper .custom-checkbox').element_by(
-                have.exact_text(hobby)
-            ).click()
+            browser.all('#hobbiesWrapper .custom-checkbox').element_by(have.text(hobby)).click()
 
-        browser.element('#uploadPicture').send_keys(
-            resource.path(student.picture)
-        )
+        browser.element('#uploadPicture').send_keys(resource.path(student.picture))
 
         browser.element('#currentAddress').send_keys(student.current_address)
-        browser.element('#state').perform(command.js.scroll_into_view)
         browser.element('#state').click()
-        browser.all('[id^=react-select][id*=option]').element_by(
-            have.exact_text(student.state)
-        ).click()
+        browser.all('[id^=react-select][id*=option]').element_by(have.text(student.state)).click()
+
         browser.element('#city').click()
-        browser.all('[id^=react-select][id*=option]').element_by(
-            have.exact_text(student.city)
-        ).click()
-        browser.element('#submit').press_enter()
+        browser.all('[id^=react-select][id*=option]').element_by(have.text(student.city)).click()
+        browser.element('#submit').click()
 
     def should_have_registered(self, student):
         full_name = f'{student.first_name} {student.last_name}'
@@ -47,17 +39,17 @@ class RegistrationPage:
         hobbies = ', '.join(student.hobbies)
         state_and_city = f'{student.state} {student.city}'
 
-        browser.all('tbody tr').even.should(have.exact_texts(
+        browser.element('.table').all('td').even.should(have.exact_texts(
             full_name,
-            f'{student.email}',
-            f'{student.gender}',
-            f'{student.mobile_number}',
-            f'{birth_day}',
-            f'{subjects}',
-            f'{hobbies}',
-            f'{student.picture}',
-            f'{student.current_address}',
-            f'{state_and_city}'
+            student.email,
+            student.gender,
+            student.mobile_number,
+            birth_day,
+            subjects,
+            hobbies,
+            student.picture,
+            student.current_address,
+            state_and_city
         )
         )
 
