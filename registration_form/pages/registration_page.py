@@ -1,5 +1,4 @@
 from selene import browser, have, command
-
 from registration_form import resource
 
 
@@ -15,7 +14,7 @@ class RegistrationPage:
         browser.element('#userEmail').set(student.email)
         browser.element(f'[name=gender][value={student.gender}]+label').click()
         browser.element('#userNumber').set(student.mobile_number)
-        browser.element('#dateOfBirthInput').set(student.birth_day)
+        browser.element('#dateOfBirthInput').perform(command.select_all).type(student.birth_day).press_enter()
 
 
         for subject in student.subjects:
@@ -24,8 +23,9 @@ class RegistrationPage:
             browser.all('#hobbiesWrapper .custom-checkbox').element_by(
                 have.exact_text(hobby)
             ).click()
+
         browser.element('#uploadPicture').send_keys(
-            resource.path(student.upload_filename)
+            resource.path(student.picture)
         )
 
         browser.element('#currentAddress').send_keys(student.current_address)
@@ -42,24 +42,23 @@ class RegistrationPage:
 
     def should_have_registered(self, student):
         full_name = f'{student.first_name} {student.last_name}'
-        date_of_birth = f'{student.birth_day}'
+        birth_day = f'{student.birth_day}'
         subjects = ', '.join(student.subjects)
         hobbies = ', '.join(student.hobbies)
-        state_city = f'{student.state} {student.city}'
+        state_and_city = f'{student.state} {student.city}'
 
-        browser.all('.table-responsive td:nth-child(2)').should(
-            have.exact_texts(
-                full_name,
-                student.email,
-                student.gender,
-                str(student.mobile_number),
-                date_of_birth,
-                subjects,
-                hobbies,
-                student.upload_filename,
-                student.current_address,
-                state_city
-            )
+        browser.all('tbody tr').even.should(have.exact_texts(
+            full_name,
+            f'{student.email}',
+            f'{student.gender}',
+            f'{student.mobile_number}',
+            f'{birth_day}',
+            f'{subjects}',
+            f'{hobbies}',
+            f'{student.picture}',
+            f'{student.current_address}',
+            f'{state_and_city}'
+        )
         )
 
    # def should_have_registered(self, full_name, email, gender, mobile_phone, birth_date,
