@@ -8,59 +8,72 @@ class RegistrationPage:
     def open(self):
         browser.open('/automation-practice-form')
 
-    def fill_first_name(self, value):
-        browser.element('#firstName').type(value)
+    def register(self, student):
+        # WHEN
+        browser.element('#firstName').set(student.first_name)
+        browser.element('#lastName').set(student.last_name)
+        browser.element('#userEmail').set(student.email)
+        browser.element(f'[name=gender][value={student.gender}]+label').click()
+        browser.element('#userNumber').set(student.mobile_number)
+        browser.element('#dateOfBirthInput').set(student.birth_day)
 
-    def fill_last_name(self, value):
-        browser.element('#lastName').type(value)
 
-    def fill_email(self, value):
-        browser.element('#userEmail').type(value)
+        for subject in student.subjects:
+            browser.element('#subjectsInput').send_keys(subject).press_tab()
+        for hobby in student.hobbies:
+            browser.all('#hobbiesWrapper .custom-checkbox').element_by(
+                have.exact_text(hobby)
+            ).click()
+        browser.element('#uploadPicture').send_keys(
+            resource.path(student.upload_filename)
+        )
 
-    def choose_gender(self, value):
-        browser.all('[name = gender]').element_by(have.value(value)).element('..').click()
-
-    def fill_mobile_number(self, value):
-        browser.element('#userNumber').type(value)
-
-    def choose_birth_date(self, value):
-        browser.element('#dateOfBirthInput').perform(command.select_all).type(value).press_enter()
-
-    def choose_subject(self, value):
-        browser.element('#subjectsInput').type(value).press_enter()
-
-    def choose_hobbies(self, value):
-        browser.all('[for^=hobbies-checkbox]').element_by(have.text(value)).click()
-
-    def upload_picture(self, value):
-        browser.element('#uploadPicture').set_value(resource.path(value))
-
-    def fill_adress(self, value):
-        browser.element('#currentAddress').type(value)
-
-    def choose_state(self, value):
+        browser.element('#currentAddress').send_keys(student.current_address)
+        browser.element('#state').perform(command.js.scroll_into_view)
         browser.element('#state').click()
-        browser.all('[id^=react-select][id*=option]').element_by(have.text(value)).click()
-
-    def choose_city(self, value):
+        browser.all('[id^=react-select][id*=option]').element_by(
+            have.exact_text(student.state)
+        ).click()
         browser.element('#city').click()
-        browser.all('[id^=react-select][id*=option]').element_by(have.text(value)).click()
+        browser.all('[id^=react-select][id*=option]').element_by(
+            have.exact_text(student.city)
+        ).click()
+        browser.element('#submit').press_enter()
 
-    def submit(self):
-        browser.element('#submit').click()
+    def should_have_registered(self, student):
+        full_name = f'{student.first_name} {student.last_name}'
+        date_of_birth = f'{student.birth_day}'
+        subjects = ', '.join(student.subjects)
+        hobbies = ', '.join(student.hobbies)
+        state_city = f'{student.state} {student.city}'
 
-    def should_have_registered(self, full_name, email, gender, mobile_phone, birth_date,
-                               subjects, hobbies, picture, current_address, state_and_city_address):
-        browser.element('.table').all('td').even.should(have.exact_texts(
-            f'{full_name}',
-            f'{email}',
-            f'{gender}',
-            f'{mobile_phone}',
-            f'{birth_date}',
-            f'{subjects}',
-            f'{hobbies}',
-            f'{picture}',
-            f'{current_address}',
-            f'{state_and_city_address}',
+        browser.all('.table-responsive td:nth-child(2)').should(
+            have.exact_texts(
+                full_name,
+                student.email,
+                student.gender,
+                str(student.mobile_number),
+                date_of_birth,
+                subjects,
+                hobbies,
+                student.upload_filename,
+                student.current_address,
+                state_city
+            )
         )
-        )
+
+   # def should_have_registered(self, full_name, email, gender, mobile_phone, birth_date,
+   #                            subjects, hobbies, picture, current_address, state_and_city_address):
+   #     browser.element('.table').all('td').even.should(have.exact_texts(
+   #         f'{full_name}',
+   #         f'{email}',
+   #         f'{gender}',
+   #         f'{mobile_phone}',
+   #         f'{birth_date}',
+   #         f'{subjects}',
+   #         f'{hobbies}',
+   #         f'{picture}',
+   #         f'{current_address}',
+   #         f'{state_and_city_address}',
+   #     )
+   #     )
